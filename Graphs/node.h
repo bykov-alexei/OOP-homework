@@ -12,4 +12,7 @@ public:
     string& getName() { return name; }
     void addNeighbour(Node* neighbour);
     void removeNeighbour(Node* neighbour);
+
+    auto begin() const { return neighbours.begin(); };
+    auto end() const { return neighbours.end(); };
 };

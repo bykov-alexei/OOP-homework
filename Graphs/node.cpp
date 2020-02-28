@@ -5,9 +5,5 @@ void Node::addNeighbour(Node * node) {
 }
 
 void Node::removeNeighbour(Node * node) {
-    auto foundNode = neighbours.find(node);
-    if (foundNode == neighbours.end()) {
-        return;
-    }
-    neighbours.erase(node);
+    neighbours.erase(neighbours.find(node));
 }
