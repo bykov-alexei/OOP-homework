@@ -1,0 +1,9 @@
+White: 4
+    KC8
+    QF2
+    NE4
+    RG6
+Black: 3
+    KE8
+    pD6
+    BE7

@@ -3,6 +3,7 @@
 #include "Step.h"
 #include "Figure.h"
 #include "Game.h"
+#include "colors.h"
 
 Game::Game() {
     for (int i = 0; i < 8; i++) {
@@ -170,7 +171,7 @@ bool Game::mate(COLOR color) {
     game->turn = color;
 
     vector<Step> steps = game->possible_steps();
-    return steps.size() == 0;
+    return steps.size() == 0 && this->check(color);
 }
 
 Game * Game::make_step(Step step) {
@@ -186,7 +187,11 @@ void Game::print() {
         cout << j + 1 << " ";
         for (int i = 0; i < 8; i++) {
             if (this->field[j][i]) {
-                cout << (char) this->field[j][i]->code << ' ';
+                if (this->field[j][i]->color == COLOR::WHITE) {
+                    cout << BLUE << (char) this->field[j][i]->code << RESET << ' ';
+                } else {
+                    cout << RED << (char) this->field[j][i]->code << RESET << ' ';
+                }
             } else {
                 cout << "~ ";
             }

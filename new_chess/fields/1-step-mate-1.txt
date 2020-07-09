@@ -1,0 +1,9 @@
+White: 4
+    KE5
+    QA6
+    NA5
+    RA7
+Black: 3
+    KB8
+    pB7
+    BC8

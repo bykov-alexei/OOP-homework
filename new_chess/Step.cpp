@@ -6,7 +6,6 @@ void Step::apply(Game * game) {
         case (STEP_TYPE::USUAL):
             Figure * fig1 = game->field[attacker.y][attacker.x];
             Figure * fig2 = game->field[attacked.y][attacked.x];
-            // cout << "fig1 " << fig1 << " " << attacker.x << " " << attacker.y << endl;
             if (fig2) {
                 delete fig2;
             }

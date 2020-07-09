@@ -141,6 +141,7 @@ vector<Step> Pawn::possible_steps(const Game & game, const Point & position) {
     vector<vector<int>> params = {{6, -1, 3}, {1, 1, 4}};
 
     auto param = params[(int) this->color];
+    // First Pawn step
     if (y == param[0]) {
         int px = x;
         int py = y + param[1] * 2;
@@ -148,6 +149,7 @@ vector<Step> Pawn::possible_steps(const Game & game, const Point & position) {
     }
     int px = x;
     int py = y + param[1];
+    // Usual Pawn step
     if (px >= 0 && px < 8 && py >= 0 && py < 8) {
         if (!game.field[py][px]) {
             steps.push_back(Step(Point(x, y), Point(px, py), Point(px, py)));
