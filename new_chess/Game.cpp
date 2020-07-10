@@ -61,22 +61,22 @@ Game::Game(const Game & game) : Game() {
             if (game.field[j][i]) {
                 switch (game.field[j][i]->code) {
                     case FIGURE::KING:
-                        this->field[j][i] = new King(*game.field[j][i]);
+                        this->field[j][i] = new King(game.field[j][i]->color);
                     break;
                     case FIGURE::QUEEN:
-                        this->field[j][i] = new Queen(*game.field[j][i]);
+                        this->field[j][i] = new Queen(game.field[j][i]->color);            
                     break;
                     case FIGURE::BISHOP:
-                        this->field[j][i] = new Bishop(*game.field[j][i]);
+                        this->field[j][i] = new Bishop(game.field[j][i]->color);
                     break;
                     case FIGURE::KNIGHT:
-                        this->field[j][i] = new Knight(*game.field[j][i]);
+                        this->field[j][i] = new Knight(game.field[j][i]->color);                       
                     break;
                     case FIGURE::ROOK:
-                        this->field[j][i] = new Rook(*game.field[j][i]);
+                        this->field[j][i] = new Rook(game.field[j][i]->color);                    
                     break;
                     case FIGURE::PAWN:
-                        this->field[j][i] = new Pawn(*game.field[j][i]);
+                        this->field[j][i] = new Pawn(game.field[j][i]->color);   
                     break;
                 }
             }
@@ -109,20 +109,22 @@ vector<Figure *> Game::find(FIGURE figure, COLOR color) {
     return res;
 }
 
-vector<Step> Game::possible_steps() {
-    vector<Step> steps = * new vector<Step>(0);
+vector<Step> * Game::possible_steps() {
+    vector<Step> * steps = new vector<Step>(0);
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (this->field[j][i]) {
                 if (this->field[j][i]->color == this->turn) {
-                    vector<Step> figure_steps = this->field[j][i]->possible_steps(*this, Point(i, j));
-                    for (Step s : figure_steps) {
+                    vector<Step> * figure_steps = this->field[j][i]->possible_steps(*this, Point(i, j));
+                    for (Step s : *figure_steps) {
                         Game * game = this->make_step(s);
-                        auto a = game->check(this->turn);
                         if (!(game->check(this->turn))) {
-                            steps.push_back(s);
+                            steps->push_back(s);
                         }
+                        // Строчка которая все ломает. Хотя в других местах отрабатывает как нужно
+                        delete game;
                     }
+                    delete figure_steps;
                 }
             }
         }
@@ -130,16 +132,17 @@ vector<Step> Game::possible_steps() {
     return steps;
 }
 
-vector<Step> Game::all_steps() {
-    vector<Step> steps = * new vector<Step>(0);
+vector<Step> * Game::all_steps() {
+    vector<Step> * steps = new vector<Step>(0);
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (this->field[j][i]) {
                 if (this->field[j][i]->color == this->turn) {
-                    vector<Step> figure_steps = this->field[j][i]->possible_steps(*this, Point(i, j));
-                    for (Step s : figure_steps) {
-                        steps.push_back(s);
+                    vector<Step> * figure_steps = this->field[j][i]->possible_steps(*this, Point(i, j));
+                    for (Step s : *figure_steps) {
+                        steps->push_back(s);
                     }
+                    delete figure_steps;
                 }
             }
         }
@@ -153,16 +156,19 @@ bool Game::check(COLOR color) {
     game->pass_turn();
     Figure * king = game->find(FIGURE::KING, color)[0];
     
-    vector<Step> steps = game->all_steps();
+    vector<Step> * steps = game->all_steps();
 
-    for (Step step : steps) {
+    for (Step step : *steps) {
         Figure * beaten = game->field[step.attacked.y][step.attacked.x];
         if (beaten) {
             if (beaten->code == FIGURE::KING) {
+                delete game;
                 return true;
             }
         }
     } 
+    delete steps;
+    delete game;
     return false;
 }
 
@@ -170,8 +176,11 @@ bool Game::mate(COLOR color) {
     Game * game = new Game(*this);
     game->turn = color;
 
-    vector<Step> steps = game->possible_steps();
-    return steps.size() == 0 && this->check(color);
+    vector<Step> * steps = game->possible_steps();
+    bool check = game->check(color);
+    delete game;
+    delete steps;
+    return steps->size() == 0 && check;
 }
 
 Game * Game::make_step(Step step) {

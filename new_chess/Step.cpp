@@ -9,9 +9,11 @@ void Step::apply(Game * game) {
             if (fig2) {
                 delete fig2;
             }
-            game->field[p1.y][p1.x] = fig1;
+            Figure * nfig1 = new Figure(*fig1);
+            delete fig1;
+            game->field[p1.y][p1.x] = nfig1; 
             game->field[attacker.y][attacker.x] = 0;
-            fig1->incrementSteps();
+            nfig1->incrementSteps();
         break;
     }
 }

@@ -31,8 +31,12 @@ int main() {
     cin >> c;
     game->turn = (c == 'W') ? COLOR::WHITE : COLOR::BLACK;
     game->print();
+    cout << "Type search deepness (1, 2, 3):" << endl;
+    int d;
+    cin >> d;
+    d = d * 2 - 1;
     
-    vector<vector<History>> ways = solutions(game, 3);
+    vector<vector<History>> ways = solutions(game, d);
     cout << "Solutions: " << ways.size() << endl;
     for (vector<History> way : ways) {
         for (History step : way) {
@@ -84,9 +88,9 @@ int main() {
 vector<vector<History>> solutions(Game * game, int n_steps) {
     vector<vector<History>> result;
     if (n_steps >= 0) {
-        vector<Step> steps = game->possible_steps();
+        vector<Step> * steps = game->possible_steps();
         
-        for (Step step : steps) {
+        for (Step step : *steps) {
             Game * next = game->make_step(step);
             vector<vector<History>> _result = solutions(next, n_steps - 1);
             if (n_steps == 1) {
@@ -99,6 +103,7 @@ vector<vector<History>> solutions(Game * game, int n_steps) {
                 way.insert(way.begin(), History(step, game));
                 result.push_back(way);
             }
+            delete next;
         }
         return result;
     } else {

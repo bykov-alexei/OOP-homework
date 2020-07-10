@@ -30,8 +30,8 @@ public:
     void pass_turn() { turn = ((turn == COLOR::WHITE) ? COLOR::BLACK : COLOR::WHITE); };
     void increase_step() { step++; };
 
-    vector<Step> possible_steps();
-    vector<Step> all_steps();
+    vector<Step> * possible_steps();
+    vector<Step> * all_steps();
 
     bool check(COLOR color);
     bool mate(COLOR color);
